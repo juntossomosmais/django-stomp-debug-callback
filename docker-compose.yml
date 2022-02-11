@@ -1,0 +1,94 @@
+version: "3.9"
+
+# https://docs.docker.com/compose/compose-file/compose-file-v3/#extension-fields
+x-build: &dockerfile-dev-build
+  context: .
+  dockerfile: Dockerfile.dev
+
+services:
+  db:
+    image: postgres:10.1-alpine
+
+  app:
+    build: *dockerfile-dev-build
+    env_file: .env
+    volumes:
+      - .:/app
+    ports:
+      - "${DJANGO_BIND_PORT}:${DJANGO_BIND_PORT}"
+    depends_on:
+      - db
+    command:
+      [
+        "./scripts/wait-for-it.sh",
+        "${DB_HOST}:${DB_PORT}",
+        "-t",
+        "120",
+        "--",
+        "./scripts/start-development.sh",
+      ]
+
+  app-production:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    volumes:
+      - .:/app
+    ports:
+      - "${DJANGO_BIND_PORT}:${DJANGO_BIND_PORT}"
+    depends_on:
+      - db
+    command:
+      [
+        "./scripts/wait-for-it.sh",
+        "${DB_HOST}:${DB_PORT}",
+        "-t",
+        "120",
+        "--",
+        "./scripts/start-production.sh",
+      ]
+
+  integration-tests:
+    build: *dockerfile-dev-build
+    env_file: .env
+    volumes:
+      - .:/app
+    ports:
+      - "${DJANGO_BIND_PORT}:${DJANGO_BIND_PORT}"
+    depends_on:
+      - db
+    command:
+      [
+        "./scripts/wait-for-it.sh",
+        "${DB_HOST}:${DB_PORT}",
+        "-t",
+        "120",
+        "--",
+        "./scripts/start-tests.sh",
+      ]
+
+  sonar:
+    container_name: sonar
+    image: sonarqube:8-community
+    environment:
+      - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+    ports:
+      - "9000:9000"
+
+  sonar-cli:
+    container_name: sonar-cli
+    image: sonarsource/sonar-scanner-cli
+    working_dir: /api
+    environment:
+      - SONAR_LOGIN=admin
+      - SONAR_PASSWORD=test
+    volumes:
+      - .:/api
+    command: ["sonar-scanner", "--debug"]
+
+  lint-formatter:
+    build: *dockerfile-dev-build
+    volumes:
+      - .:/app
+    command: ["./scripts/start-formatter-lint.sh"]

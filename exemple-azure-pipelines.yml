@@ -1,0 +1,21 @@
+trigger:
+  - main
+  - develop
+  - release/*
+
+pr:
+  - main
+  - develop
+  - release/*
+
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: juntossomosmais/azure-pipelines-templates
+      endpoint: github.com
+
+extends:
+  template: stages.yaml@templates
+  parameters:
+      vmImage: ubuntu-latest
