@@ -1,29 +1,17 @@
 [tool.poetry]
-name = "django_template"
-version = "0.1.0"
-description = "Template Django project for JS+ back-end applications"
+name = "django-stomp-debug-callback"
+version = "1.0.0"
+description = "A simple view to help know what the callback is doing on django-stomp usage"
 authors = ["Juntos Somos Mais <labs@juntossomosmais.com.br>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
-django = "^4"
-djangorestframework = "^3"
-psycopg2-binary = "^2"
-### Infrastructure
-django-health-check = "^3"
-django-cors-headers = "^3"
-### WSGI
-gunicorn = "^20"
-gevent = "^21"
-### Logging
-request-id-django-log = "^0"
-python-json-logger = "^2"
-### Tooling
-requests = "^2"
-### Helpers and so on
-autodynatrace = "^1"
+python = "^3.7"
+django = "~=2.2"
+django-stomp = "^5.0.0"
 
 [tool.poetry.dev-dependencies]
+### Tests Runner
+tox = "^3.24.5"
 ### Pytest: Essentials
 pytest = "^7"
 pytest-mock = "^3"
