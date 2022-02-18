@@ -49,6 +49,9 @@ stages:
         inputs:
           containerregistrytype: 'Container Registry'
           dockerComposeCommand: 'up --abort-on-container-exit tests'
+      - task: CmdLine@2
+        inputs:
+          script: 'rm -rf .tox'
       - publish: $(System.DefaultWorkingDirectory)
         artifact: s
         displayName: 'Send artifact to sonar'
