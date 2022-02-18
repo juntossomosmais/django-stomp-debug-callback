@@ -50,6 +50,7 @@ stages:
           containerregistrytype: 'Container Registry'
           dockerComposeCommand: 'up --abort-on-container-exit tests'
       - task: CmdLine@2
+        displayName: 'Remove .tox dependency'
         inputs:
           script: 'rm -rf .tox'
       - publish: $(System.DefaultWorkingDirectory)
