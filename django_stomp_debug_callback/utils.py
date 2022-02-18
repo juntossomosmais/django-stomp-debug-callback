@@ -1,5 +1,4 @@
-def mock_callable_function():
+def mock_callable_function() -> None:
     """
     Helper function to override django-stomp ack or nack behavior
     """
-    return

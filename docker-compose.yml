@@ -25,7 +25,8 @@ services:
 
   sonar:
     container_name: sonar
-    image: sonarqube:8-community
+    image: mwizner/sonarqube:8.9.5-community # chip m1 mac
+#    image: sonarqube:8-community
     environment:
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
     ports:

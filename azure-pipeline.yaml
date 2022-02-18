@@ -57,7 +57,7 @@ stages:
   pool:
     vmImage: ${{ parameters.vmImage }}
   condition: and(succeeded(), ne(variables['Build.Reason'], 'IndividualCI'))
-  displayName: Sonar g
+  displayName: Sonar
   jobs:
     - job:
       displayName: Sonar prepare, analyze an publish
