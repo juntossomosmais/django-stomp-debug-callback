@@ -49,6 +49,14 @@ stages:
         inputs:
           containerregistrytype: 'Container Registry'
           dockerComposeCommand: 'up --abort-on-container-exit tests'
+      - task: CmdLine@2
+        displayName: 'Remove .tox dependency'
+        inputs:
+          script: |
+            ls -la
+            echo "removing .tox"
+            rm -rf .tox
+            ls -la
       - publish: $(System.DefaultWorkingDirectory)
         artifact: s
         displayName: 'Send artifact to sonar'
