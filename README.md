@@ -8,11 +8,11 @@
 [![PyPI version](https://badge.fury.io/py/django-stomp-debug-callback.svg)](https://badge.fury.io/py/django-stomp-debug-callback)
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/juntossomosmais/django-stomp-debug-callback/blob/master/LICENSE)
 
-This functionality was created to help you understand and improve your callback code used in [django-stomp](https://github.com/juntossomosmais/django-stomp) library
+This functionality helps you comprehend and enhance your callback code used with the [Django STOMP](https://github.com/juntossomosmais/django-stomp) library.
 
-Through this view together with some lib of caller identification for apis, database and service we were able to extract inputs for consumer optimization.
+As this project uses a [view](./django_stomp_debug_callback/views.py) to call your callback function, it's possible to extract quite essential data that you can use to optimize your implementation.
 
-Below we have an example of using it together with the [django debug toolbar](https://django-debug-toolbar.readthedocs.io/en/latest/).
+See an example of this approach in action thanks to [Django Debug Toolbar](https://django-debug-toolbar.readthedocs.io/en/latest/):
 
 ![Django callback view utilization](docs/example.gif?raw=true)
 
