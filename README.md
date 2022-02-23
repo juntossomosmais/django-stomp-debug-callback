@@ -27,7 +27,7 @@ in your application's `urls` code include the debug callback view route.
 from django.conf import settings
 if settings.DEBUG:
     urlpatterns += [
-        path("debug-callback/", include("django_stomp.debug_callback_view.urls")),
+        path("debug-callback/", include("django_stomp_debug_callback.urls")), # django stomp callback urls
     ]
 ```
 
@@ -71,7 +71,7 @@ pip install django-debug-toolbar
 from django.conf import settings
 if settings.DEBUG:
     urlpatterns += [
-        path("debug-callback/", include("django_stomp.debug_callback_view.urls")), # django stomp callback view
+        path("debug-callback/", include("django_stomp_debug_callback.urls")), # django stomp callback urls
         path("debug-toolbar/", include("debug_toolbar.urls")) # django debug toolbar
     ]
 ```
@@ -82,8 +82,8 @@ in your `.env`
 ```shell
 ##################
 #### DEBUG LIB CONFIGURATION
-DEBUG_APPS = "debug_toolbar"
-DEBUG_MIDDLEWARE ="debug_toolbar.middleware.DebugToolbarMiddleware"
+DEBUG_APPS = debug_toolbar,django_stomp_debug_callback
+DEBUG_MIDDLEWARE = debug_toolbar.middleware.DebugToolbarMiddleware
 ```
 
 in your `setting`
@@ -97,11 +97,11 @@ if DEBUG:
 
     DEBUG_APPS = os.getenv("DEBUG_APPS")
     if DEBUG_APPS:
-        INSTALLED_APPS.append(*DEBUG_APPS.split(","))
+        INSTALLED_APPS += DEBUG_APPS.split(",")
 
     DEBUG_MIDDLEWARE = os.getenv("DEBUG_MIDDLEWARE")
     if DEBUG_MIDDLEWARE:
-        MIDDLEWARE.append(*DEBUG_MIDDLEWARE.split(","))
+        MIDDLEWARE += DEBUG_MIDDLEWARE.split(",")
 ```
 
 Now you can see the debug panel in your admin url (localhost:8000/admin) and you can choose the route you want to see the requests to the bank in a given view with timing details and explain options and see the most problematic query of your stream.

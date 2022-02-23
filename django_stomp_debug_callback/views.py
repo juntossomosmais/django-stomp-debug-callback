@@ -6,6 +6,7 @@ from http import HTTPStatus
 
 from django.http import HttpRequest
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django_stomp.services.consumer import Payload
 
@@ -15,6 +16,7 @@ _logger = logging.getLogger(__name__)
 
 
 @require_http_methods(["POST"])
+@csrf_exempt
 def debug_callback_view(request: HttpRequest) -> JsonResponse:
     """
     View wrapper to call pubsub logic
