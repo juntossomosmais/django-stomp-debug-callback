@@ -14,7 +14,7 @@ keywords=["django-stomp", "stomp", "django", "development", "django-debug"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-django = "~=2.2"
+django = "~=3.2"
 django-stomp = "^5.0.0"
 
 [tool.poetry.dev-dependencies]
