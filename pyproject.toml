@@ -3,6 +3,14 @@ name = "django-stomp-debug-callback"
 version = "1.0.0"
 description = "A simple view to help know what the callback is doing on django-stomp usage"
 authors = ["Juntos Somos Mais <labs@juntossomosmais.com.br>"]
+readme = "README.md"
+license = "MIT"
+include = [
+    "LICENSE",
+]
+homepage = "https://github.com/juntossomosmais/django-stomp-debug-callback"
+repository = "https://github.com/juntossomosmais/django-stomp-debug-callback"
+keywords=["django-stomp", "stomp", "django", "development", "django-debug"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
@@ -34,7 +42,7 @@ types-requests = "*"
 
 [tool.black]
 line-length = 120
-target_version = ["py310"]
+target_version = ["py37"]
 include = '\.pyi?$'
 exclude = '''
 (

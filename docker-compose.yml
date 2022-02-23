@@ -6,75 +6,33 @@ x-build: &dockerfile-dev-build
   dockerfile: Dockerfile.dev
 
 services:
-  db:
-    image: postgres:10.1-alpine
-
-  app:
+  tests:
     build: *dockerfile-dev-build
-    env_file: .env
     volumes:
       - .:/app
-    ports:
-      - "${DJANGO_BIND_PORT}:${DJANGO_BIND_PORT}"
-    depends_on:
-      - db
     command:
-      [
-        "./scripts/wait-for-it.sh",
-        "${DB_HOST}:${DB_PORT}",
-        "-t",
-        "120",
-        "--",
-        "./scripts/start-development.sh",
-      ]
+      ["./scripts/start-tests.sh"]
+    networks:
+      - django-stomp-debug-callback-network
 
-  app-production:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file: .env
-    volumes:
-      - .:/app
-    ports:
-      - "${DJANGO_BIND_PORT}:${DJANGO_BIND_PORT}"
-    depends_on:
-      - db
-    command:
-      [
-        "./scripts/wait-for-it.sh",
-        "${DB_HOST}:${DB_PORT}",
-        "-t",
-        "120",
-        "--",
-        "./scripts/start-production.sh",
-      ]
-
-  integration-tests:
+  lint-formatter:
     build: *dockerfile-dev-build
-    env_file: .env
     volumes:
       - .:/app
-    ports:
-      - "${DJANGO_BIND_PORT}:${DJANGO_BIND_PORT}"
-    depends_on:
-      - db
-    command:
-      [
-        "./scripts/wait-for-it.sh",
-        "${DB_HOST}:${DB_PORT}",
-        "-t",
-        "120",
-        "--",
-        "./scripts/start-tests.sh",
-      ]
+    command: ["./scripts/start-formatter-lint.sh"]
+    networks:
+      - django-stomp-debug-callback-network
 
   sonar:
     container_name: sonar
-    image: sonarqube:8-community
+    image: mwizner/sonarqube:8.9.5-community # chip m1 mac
+#    image: sonarqube:8-community
     environment:
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
     ports:
       - "9000:9000"
+    networks:
+      - django-stomp-debug-callback-network
 
   sonar-cli:
     container_name: sonar-cli
@@ -86,9 +44,8 @@ services:
     volumes:
       - .:/api
     command: ["sonar-scanner", "--debug"]
+    networks:
+      - django-stomp-debug-callback-network
 
-  lint-formatter:
-    build: *dockerfile-dev-build
-    volumes:
-      - .:/app
-    command: ["./scripts/start-formatter-lint.sh"]
+networks:
+  django-stomp-debug-callback-network:
