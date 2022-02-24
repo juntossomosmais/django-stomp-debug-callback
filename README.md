@@ -1,6 +1,6 @@
 # Django stomp debug callback
 
-[![Build Status](https://dev.azure.com/juntos-somos-mais-loyalty/python/_apis/build/status/django-stomp-debug-callback?branchName=master)](https://dev.azure.com/juntos-somos-mais-loyalty/python/_build/latest?definitionId=272&branchName=master)
+[![Build Status](https://dev.azure.com/juntos-somos-mais-loyalty/python/_apis/build/status/juntossomosmais.django-stomp-debug-callback?branchName=master)](https://dev.azure.com/juntos-somos-mais-loyalty/python/_build/latest?definitionId=272&branchName=master)
 [![Maintainability](https://sonarcloud.io/api/project_badges/measure?project=juntossomosmais_django-stomp-debug-callback&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=juntossomosmais_django-stomp-debug-callback)
 [![Test Coverage](https://sonarcloud.io/api/project_badges/measure?project=juntossomosmais_django-stomp-debug-callback&metric=coverage)](https://sonarcloud.io/dashboard?id=juntossomosmais_django-stomp-debug-callback)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=juntossomosmais_django-stomp-debug-callback&metric=alert_status&token=edc3f4783b528b9c532e571bd14551c754b01d98)](https://sonarcloud.io/summary/new_code?id=juntossomosmais_django-stomp-debug-callback)
