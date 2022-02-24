@@ -1,10 +1,8 @@
 trigger:
   - master
-  - release/*
 
 pr:
   - master
-  - release/*
 
 parameters:
 - name: vmImage
@@ -75,3 +73,57 @@ stages:
         displayName: 'Run Code Analysis'
       - task: SonarCloudPublish@1
         displayName: 'Publish Quality Gate Result'
+
+- stage: Publish Artifact
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'IndividualCI'))
+  displayName: Publish artifact
+  jobs:
+    - job:
+      displayName: Publish artifact
+      steps:
+        - task: PublishBuildArtifacts@1
+          displayName: "Publish Artifact: drop"
+          inputs:
+            PathtoPublish: ./
+
+- stage: Publish on PyPI
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  displayName: Publish on PyPI
+  jobs:
+    - job:
+      displayName: Publish on PyPI
+      steps:
+        - script: |
+            set -e
+            pip install poetry
+
+            #DEV
+            #poetry config http-basic.testpypi $(PYPI_JSM_USERNAME_TEST) $(PYPI_JSM_PASSWORD_TEST)
+            #poetry publish -r testpypi
+
+            #PROD
+            poetry build
+            poetry publish -u $(PYPI_JSM_USERNAME) -p $(PYPI_JSM_PASSWORD)
+          displayName: 'Publish on PyPI'
+        - script: |
+            set -e
+            
+            set_variable(){
+                echo "Set key $1 as $2"
+                echo "##vso[task.setvariable variable=$1]$2"
+            }
+            
+            LIB_VERSION=$(cat pyproject.toml | grep 'version' | head -1 | cut -d '"' -f 2)
+            
+            set_variable "TAG_VERSION" ${LIB_VERSION}
+          displayName: 'Retrieve version from pyproject.toml'
+        - task: GitHubRelease@1
+          displayName: 'GitHub release (create)'
+          inputs:
+            gitHubConnection: 'jsm-robot-personal-access-token'
+            tagSource: userSpecifiedTag
+            tag: '$(TAG_VERSION)'
