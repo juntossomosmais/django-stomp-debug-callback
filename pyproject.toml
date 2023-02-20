@@ -32,7 +32,7 @@ pytest-icdiff = "^0"
 pytest-clarity = "^1"
 ### Format, lint, static type checker, among others
 black = "*"
-mypy = "^0"
+mypy = "^1"
 isort = "*"
 flake8 = "*"
 flake8-bugbear = "*"
