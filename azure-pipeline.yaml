@@ -1,134 +1,27 @@
 trigger:
-  - master
-
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - django_stomp_debug_callback
+      - poetry.lock
 pr:
-  - master
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - django_stomp_debug_callback
+      - poetry.lock
 
-parameters:
-- name: vmImage
-  type: string
-  default: ubuntu-latest
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: juntossomosmais/azure-pipelines-templates
+      endpoint: github.com
+      ref: main
 
-stages:
-- stage: Lint_Test
-  pool:
-    vmImage: ${{ parameters.vmImage }}
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'IndividualCI'))
-  displayName: Lint and Test project
-  jobs:
-    - job: Lint
-      displayName: Lint check the project
-      steps:
-        - task: UsePythonVersion@0
-          inputs:
-            versionSpec: '3.7'
-            addToPath: true
-            architecture: 'x64'
-          displayName: "User python 3.7"
-        - script: |
-            FILE=.pre-commit-config.yaml
-            if ! test -f "$FILE"; then
-                echo "$FILE does not exists. Exiting the pre-commit linting stage with success."
-                exit 0
-            fi
-            echo "$FILE exists. Installing pre-commit"
-            export SETUPTOOLS_USE_DISTUTILS=stdlib
-            python --version
-            pip install pre-commit
-            pre-commit run --all-files
-          displayName: "Checks for .pre-commit-config.yaml on project root, lint checking if it does"
-    - job:
-      dependsOn: Lint
-      condition: succeeded()
-      displayName: Test project
-      steps:
-      - task: DockerCompose@0
-        displayName: 'Run tests on Docker Compose service'
-        inputs:
-          containerregistrytype: 'Container Registry'
-          dockerComposeCommand: 'up --abort-on-container-exit tests'
-      - publish: $(System.DefaultWorkingDirectory)
-        artifact: s
-        displayName: 'Send artifact to sonar'
-
-- stage: Sonar
-  pool:
-    vmImage: ${{ parameters.vmImage }}
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'IndividualCI'))
-  dependsOn: Lint_Test
-  jobs:
-    - job:
-      displayName: Sonar prepare, analyze an publish
-      steps:
-      - download: current
-        artifact: s
-        displayName: 'Get artifact from test'
-      - task: SonarCloudPrepare@1
-        displayName: 'Prepare analysis on SonarCloud'
-        inputs:
-          SonarCloud: SonarCloud
-          organization: juntossomosmais
-          scannerMode: CLI
-      - task: SonarCloudAnalyze@1
-        displayName: 'Run Code Analysis'
-      - task: SonarCloudPublish@1
-        displayName: 'Publish Quality Gate Result'
-
-- stage: Publish_Artifact
-  pool:
-    vmImage: ${{ parameters.vmImage }}
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'IndividualCI'))
-  dependsOn: Sonar
-  displayName: Publish artifact
-  jobs:
-    - job:
-      displayName: Publish artifact
-      steps:
-        - task: PublishBuildArtifacts@1
-          displayName: "Publish Artifact: drop"
-          inputs:
-            PathtoPublish: ./
-
-- stage: Publish_on_PyPI
-  pool:
-    vmImage: ${{ parameters.vmImage }}
-  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.Reason'], 'IndividualCI'))
-  dependsOn: Publish_Artifact
-  displayName: Publish on PyPI
-  jobs:
-    - job:
-      variables:
-        - group: Python library variables
-      displayName: Publish on PyPI
-      steps:
-        - task: CmdLine@2
-          inputs:
-            script: |
-              set -e
-              pip install poetry
-              echo "poetry build >>>"
-              poetry build
-              echo "poetry publish >>>"
-              poetry publish -u $(PYPI_JSM_USERNAME) -p $(PYPI_JSM_PASSWORD)
-    - job: 
-      displayName: 'Retrieve version from pyproject.toml'
-      steps:
-        - task: CmdLine@2
-          inputs:
-            script: |
-              set -e
-              
-              set_variable(){
-                  echo "Set key $1 as $2"
-                  echo "##vso[task.setvariable variable=$1]$2"
-              }
-              
-              LIB_VERSION=$(cat pyproject.toml | grep 'version' | head -1 | cut -d '"' -f 2)
-              
-              set_variable "TAG_VERSION" ${LIB_VERSION}
-        - task: GitHubRelease@1
-          displayName: 'GitHub release (create)'
-          inputs:
-            gitHubConnection: 'jsm-robot-personal-access-token'
-            tagSource: userSpecifiedTag
-            tag: '$(TAG_VERSION)'
+extends:
+  template: python/library.yaml@templates

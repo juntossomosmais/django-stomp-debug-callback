@@ -76,13 +76,13 @@ def test_should_return_warning_when_callback_function_raise_error(
         }
     )
 
-    with pytest.raises(Exception):
+    with pytest.raises(Exception, match=":careca:"):
         client_request.post(endpoint_url, data=request_body, content_type=json_content_type)
 
     mock_fake_callback_function.assert_called_once_with(
         (
             Payload(
-                ack=mock_callable_function,
+                ack=mock_callable_function,  # noqa: B017
                 nack=mock_callable_function,
                 body=fake_body,
                 headers=fake_headers,

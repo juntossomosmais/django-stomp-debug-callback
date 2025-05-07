@@ -82,7 +82,7 @@ def test_should_raise_when_callback_function_launch_error(mocker: MockerFixture)
     )
 
     # serializer invocation
-    with pytest.raises(Exception):
+    with pytest.raises(Exception, match=":careca:"):
         debug_callback_view(mock_request)
 
         mock_fake_callback_function.assert_called_once_with(

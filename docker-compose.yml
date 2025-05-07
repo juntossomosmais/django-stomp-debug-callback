@@ -1,12 +1,10 @@
-version: "3.9"
-
 # https://docs.docker.com/compose/compose-file/compose-file-v3/#extension-fields
 x-build: &dockerfile-dev-build
   context: .
   dockerfile: Dockerfile.dev
 
 services:
-  tests:
+  integration-tests:
     build: *dockerfile-dev-build
     volumes:
       - .:/app

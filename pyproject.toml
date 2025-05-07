@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-stomp-debug-callback"
-version = "1.0.0"
+version = "2.0.0"
 description = "A simple view to help know what the callback is doing on django-stomp usage"
 authors = ["Juntos Somos Mais <labs@juntossomosmais.com.br>"]
 readme = "README.md"
@@ -13,36 +13,36 @@ repository = "https://github.com/juntossomosmais/django-stomp-debug-callback"
 keywords=["django-stomp", "stomp", "django", "development", "django-debug"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10"
 django = "*"
-django-stomp = "^5.0.0"
+django-stomp = "^6.1.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 ### Tests Runner
-tox = "^3.24.5"
+tox = "*"
 ### Pytest: Essentials
-pytest = "^7"
-pytest-mock = "^3"
-pytest-django = "^4"
-pytest-cov = "^3"
-pytest-env = "^0"
+pytest = "*"
+pytest-mock = "*"
+pytest-django = "*"
+pytest-cov = "*"
+pytest-env = "*"
 pytest-xdist = "*"
 ### Pytest: Add-ons
-pytest-icdiff = "^0"
-pytest-clarity = "^1"
+pytest-icdiff = "*"
+pytest-clarity = "*"
 ### Format, lint, static type checker, among others
 black = "*"
-mypy = "^0"
+mypy = "*"
 isort = "*"
 flake8 = "*"
 flake8-bugbear = "*"
-autoflake = "^1"
-pre-commit = "^2"
+autoflake = "*"
+pre-commit = "*"
 types-requests = "*"
 
 [tool.black]
 line-length = 120
-target_version = ["py37"]
+target_version = ["py310"]
 include = '\.pyi?$'
 exclude = '''
 (
